@@ -1,4 +1,4 @@
-package com.hexagone.fooderlich
+package com.example.application
 
 import io.flutter.embedding.android.FlutterActivity
 
