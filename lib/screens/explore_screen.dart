@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../api/mock_fooderlich_service.dart';
 import '../components/components.dart';
+import '../models/models.dart';
 
 class ExploreScreen extends StatelessWidget {
   ExploreScreen({super.key});
@@ -10,20 +11,17 @@ class ExploreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: mockService.getExploreData(),
-      builder: (context, snapshot) {
+      builder: (context, AsyncSnapshot<ExploreData> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          final recipes = snapshot.data!.todayRecipes;
+          final recipes = snapshot.data?.todayRecipes ?? [];
+          final friendPosts = snapshot.data?.friendPosts ?? [];
 
           return ListView(
             scrollDirection: Axis.vertical,
-            children: List.generate(recipes.length, (index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card1(
-                  recipe: recipes[index],
-                ),
-              );
-            }),
+            children: [
+              TodayRecipeListView(recipes: recipes),
+              FriendPostListView(friendPosts: friendPosts),
+            ],
           );
         } else {
           return const Center(

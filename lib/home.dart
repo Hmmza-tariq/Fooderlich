@@ -30,6 +30,7 @@ class HomeState extends State<Home> {
         authorName: 'Sam',
         role: 'Chef',
         backgroundImage: 'assets/magazine_pics/mag2.png',
+        profileImage: 'assets/profile_pics/author.png',
       ),
     ),
 
