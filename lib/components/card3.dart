@@ -19,7 +19,7 @@ class Card3 extends StatelessWidget {
           element,
           style: FooderlichTheme.darkTextTheme.bodyLarge,
         ),
-        backgroundColor: Colors.black.withOpacity(0.7),
+        backgroundColor: Colors.black.withAlpha(200),
       );
       chips.add(chip);
     });
@@ -48,7 +48,7 @@ class Card3 extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withAlpha(180),
                 borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               ),
             ),
