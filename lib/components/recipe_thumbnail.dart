@@ -34,6 +34,16 @@ class RecipeThumbnail extends StatelessWidget {
             style: TextStyle(
               fontSize: 12.0,
               fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          Text(
+            recipe.source,
+            style: TextStyle(
+              fontSize: 12.0,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+              color: Colors.blue,
             ),
           ),
         ],
