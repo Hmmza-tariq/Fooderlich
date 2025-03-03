@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'components/components.dart';
 import 'models/models.dart';
 import 'screens/explore_screen.dart';
+import 'screens/recipe_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,24 +16,8 @@ class HomeState extends State<Home> {
   int _selectedIndex = 0;
 
   static List<Widget> pages = <Widget>[
-    // TODO: Replace with ExploreScreen
-    // Container(color: Colors.white),
     ExploreScreen(),
-    // TODO: Replace with RecipesScreen
-    // Container(color: Colors.green),
-    Card2(
-      recipe: ExploreRecipe(
-        id: '2',
-        cardType: RecipeCardType.card2,
-        title: 'Recipe Title',
-        subtitle: 'Smoothie',
-        message: 'Let\'s start by making a smoothie',
-        authorName: 'Sam',
-        role: 'Chef',
-        backgroundImage: 'assets/magazine_pics/mag2.png',
-        profileImage: 'assets/profile_pics/author.png',
-      ),
-    ),
+    RecipeScreen(),
 
     // Container(color: Colors.blue),
     Card3(
