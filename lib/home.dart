@@ -20,10 +20,6 @@ class HomeState extends State<Home> {
     GroceryScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    Provider.of<TabManager>(context, listen: false).goToTab(index);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<TabManager>(
@@ -38,12 +34,14 @@ class HomeState extends State<Home> {
             elevation: 2,
             centerTitle: true,
           ),
-          body: pages[tabManager.selectedIndex],
+          body: tabManager.pages[tabManager.selectedIndex],
           bottomNavigationBar: BottomNavigationBar(
             selectedItemColor:
                 Theme.of(context).textSelectionTheme.selectionColor,
             currentIndex: tabManager.selectedIndex,
-            onTap: _onItemTapped,
+            onTap: (index) {
+              tabManager.goToTab(index);
+            },
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.explore),

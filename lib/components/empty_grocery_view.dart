@@ -35,8 +35,6 @@ class EmptyGroceryScreen extends StatelessWidget {
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // Using listen: false since we're in an event handler
-              // Add the appropriate type for your tab controller
               Provider.of<TabManager>(context, listen: false).goToTab(1);
             },
             style: ElevatedButton.styleFrom(
