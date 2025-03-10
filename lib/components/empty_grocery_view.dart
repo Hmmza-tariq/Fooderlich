@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../api/mock_fooderlich_service.dart';
 import '../models/tab_manager.dart';
 
 class EmptyGroceryScreen extends StatelessWidget {
-  final exploreService = MockFooderlichService();
-
-  EmptyGroceryScreen({super.key});
+  const EmptyGroceryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
