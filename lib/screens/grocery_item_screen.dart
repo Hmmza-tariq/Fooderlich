@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 
-class GroceryItemScreen extends StatefulWidget {
-  const GroceryItemScreen({super.key});
+import '../models/models.dart';
 
+class GroceryItemScreen extends StatefulWidget {
+  final Function(GroceryItem) onCreate;
+  final Function(GroceryItem) onUpdate;
+  final GroceryItem? originalItem;
+  final bool isUpdating;
+
+  const GroceryItemScreen({
+    super.key,
+    required this.onCreate,
+    required this.onUpdate,
+    this.originalItem,
+  }) : isUpdating = (originalItem != null);
   @override
   State<GroceryItemScreen> createState() => _GroceryItemScreenState();
 }
@@ -10,6 +21,8 @@ class GroceryItemScreen extends StatefulWidget {
 class _GroceryItemScreenState extends State<GroceryItemScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      color: Colors.amber,
+    );
   }
 }

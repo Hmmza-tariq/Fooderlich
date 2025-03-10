@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../api/mock_fooderlich_service.dart';
 import '../components/components.dart';
 import '../models/models.dart';
+import 'grocery_item_screen.dart';
 
 class GroceryScreen extends StatelessWidget {
   final exploreService = MockFooderlichService();
@@ -17,7 +18,19 @@ class GroceryScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          buildGroceryScreen();
+          final manager = Provider.of<GroceryManager>(context, listen: false);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GroceryItemScreen(
+                onCreate: (item) {
+                  manager.addItem(item);
+                  Navigator.pop(context);
+                },
+                onUpdate: (item) {},
+              ),
+            ),
+          );
         },
       ),
     );
