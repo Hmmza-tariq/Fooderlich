@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
@@ -32,25 +33,51 @@ class AppRouter {
             }),
         GoRoute(
           name: 'home',
-          path: '/home',
+          path: '/:tab',
           builder: (context, state) {
-            final tab = state.uri.queryParameters['tab'] != null
-                ? int.parse(state.uri.queryParameters['tab']!)
-                : 0;
+            final tab = int.parse(state.uri.queryParameters['tab'] ?? '0');
             return Home(
               key: state.pageKey,
               currentTab: tab,
             );
           },
+          routes: [],
         ),
       ],
+      errorPageBuilder: (context, state) {
+        return MaterialPage(
+          key: state.pageKey,
+          child: Scaffold(
+            body: SizedBox(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 100,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Error: ${state.error}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
       redirect: (context, state) {
         final loggedIn = appStateManager.isLoggedIn;
         final isLoggingIn = state.matchedLocation == '/login';
         if (!loggedIn) return isLoggingIn ? null : '/login';
-        // if (!loggedIn && !isLoggingIn) {
-        //   return '/login';
-        // }
+
         final isOnboardingComplete = appStateManager.isOnboardingComplete;
         final isOnboarding = state.matchedLocation == '/onboarding';
         if (!isOnboardingComplete) {
