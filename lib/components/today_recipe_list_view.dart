@@ -1,41 +1,48 @@
 import 'package:flutter/material.dart';
 
+import '../components/components.dart';
 import '../models/models.dart';
-import 'components.dart';
 
 class TodayRecipeListView extends StatelessWidget {
-  const TodayRecipeListView({super.key, required this.recipes});
   final List<ExploreRecipe> recipes;
+
+  const TodayRecipeListView({
+    super.key,
+    required this.recipes,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 450.0,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 16.0,
-          bottom: 12.0,
-          left: 16.0,
-        ),
-        child: ListView(
-          children: [
-            Container(
-              height: 400.0,
-              color: Colors.transparent,
-              child: ListView.separated(
-                primary: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: recipes.length,
-                separatorBuilder: (context, index) {
-                  return SizedBox(width: 16.0);
-                },
-                itemBuilder: (context, index) {
-                  final recipe = recipes[index];
-                  return Card1(recipe: recipe);
-                },
-              ),
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Recipes of the Day 🍳',
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16),
+          Container(
+            height: 400,
+            color: Colors.transparent,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: recipes.length,
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+                return buildCard(recipe);
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(width: 16);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -48,8 +55,7 @@ class TodayRecipeListView extends StatelessWidget {
     } else if (recipe.cardType == RecipeCardType.card3) {
       return Card3(recipe: recipe);
     } else {
-      SnackBar(content: Text('Unknown Card Type'));
-      return SizedBox();
+      throw Exception("This card doesn't exist yet");
     }
   }
 }

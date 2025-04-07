@@ -14,7 +14,11 @@ dependencies:
   google_fonts: ^6.2.1
   intl: ^0.20.2
   provider: ^6.1.2
+  shared_preferences: ^2.5.3
+  smooth_page_indicator: ^1.2.1
+  url_launcher: ^6.3.1
   uuid: ^4.5.1
+  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_test:
