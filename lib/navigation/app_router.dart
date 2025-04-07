@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
-import '../screens/login_screen.dart';
 import '../models/models.dart';
-import '../screens/onboarding_screen.dart';
+import '../screens/screens.dart';
 
 class AppRouter {
   final AppStateManager appStateManager;
@@ -31,6 +30,19 @@ class AppRouter {
             builder: (context, state) {
               return const OnboardingScreen();
             }),
+        GoRoute(
+          name: 'home',
+          path: '/home',
+          builder: (context, state) {
+            final tab = state.uri.queryParameters['tab'] != null
+                ? int.parse(state.uri.queryParameters['tab']!)
+                : 0;
+            return Home(
+              key: state.pageKey,
+              currentTab: tab,
+            );
+          },
+        ),
       ],
       redirect: (context, state) {
         final loggedIn = appStateManager.isLoggedIn;
