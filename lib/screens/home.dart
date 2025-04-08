@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../models/models.dart';
 import 'explore_screen.dart';
 import 'grocery_screen.dart';
 import 'recipes_screen.dart';
+import '../models/models.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -31,7 +32,7 @@ class HomeState extends State<Home> {
       appBar: AppBar(
         title: Text(
           'Fooderlich',
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.headlineLarge,
         ),
         actions: [
           profileButton(widget.currentTab),
@@ -43,6 +44,7 @@ class HomeState extends State<Home> {
         currentIndex: widget.currentTab,
         onTap: (index) {
           Provider.of<AppStateManager>(context, listen: false).goToTab(index);
+          context.go('/$index');
         },
         items: const [
           BottomNavigationBarItem(
@@ -74,6 +76,9 @@ class HomeState extends State<Home> {
         ),
         onTap: () {
           // TODO: Navigate to profile screen
+          context.goNamed('profile', pathParameters: {
+            'tab': currentTab.toString(),
+          });
         },
       ),
     );

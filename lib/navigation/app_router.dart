@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../screens/grocery_item_screen.dart';
+import '../screens/login_screen.dart';
 import '../models/models.dart';
-import '../screens/screens.dart';
+import '../screens/onboarding_screen.dart';
+import '../screens/home.dart';
 
 class AppRouter {
   final AppStateManager appStateManager;
@@ -32,39 +35,65 @@ class AppRouter {
               return const OnboardingScreen();
             }),
         GoRoute(
-          name: 'home',
-          path: '/:tab',
-          builder: (context, state) {
-            final tab = int.parse(state.uri.queryParameters['tab'] ?? '0');
-            return Home(
-              key: state.pageKey,
-              currentTab: tab,
-            );
-          },
-          routes: [],
-        ),
+            name: 'home',
+            path: '/:tab',
+            builder: (context, state) {
+              final currentTab =
+                  int.tryParse(state.pathParameters['tab'] ?? '') ?? 0;
+              // const currentTab = 0;
+              return Home(
+                key: state.pageKey,
+                currentTab: currentTab,
+              );
+            },
+            routes: [
+              GoRoute(
+                name: 'item',
+                path: 'item/:id',
+                builder: (context, state) {
+                  final itemId = state.pathParameters['id'];
+                  final item = itemId == 'new'
+                      ? null
+                      : groceryManager.getGroceryItem(itemId!);
+                  return GroceryItemScreen(
+                    originalItem: item,
+                    onCreate: (item) => groceryManager.addItem(item),
+                    onUpdate: (item) => groceryManager.updateItem(item),
+                  );
+                },
+              ),
+            ]),
       ],
       errorPageBuilder: (context, state) {
         return MaterialPage(
           key: state.pageKey,
           child: Scaffold(
-            body: SizedBox(
-              width: double.infinity,
+            backgroundColor: const Color(0xFFF9F9F9),
+            body: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.error_outline,
-                    size: 100,
-                    color: Theme.of(context).colorScheme.error,
+                    color: Colors.red,
+                    size: 72,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Oops! Something went wrong.',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   Text(
-                    'Error: ${state.error}',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      color: Colors.red,
+                    state.error.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
                     ),
                   ),
                 ],
@@ -77,7 +106,9 @@ class AppRouter {
         final loggedIn = appStateManager.isLoggedIn;
         final isLoggingIn = state.matchedLocation == '/login';
         if (!loggedIn) return isLoggingIn ? null : '/login';
-
+        // if (!loggedIn && !isLoggingIn) {
+        //   return '/login';
+        // }
         final isOnboardingComplete = appStateManager.isOnboardingComplete;
         final isOnboarding = state.matchedLocation == '/onboarding';
         if (!isOnboardingComplete) {
@@ -85,7 +116,7 @@ class AppRouter {
         }
 
         if (isLoggingIn || isOnboarding) {
-          return '/{$FooderlichTab.explore}';
+          return '/${FooderlichTab.explore}';
         }
         return null;
       });
