@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'models.dart';
+import 'auth_service.dart';
 
 class FooderlichTab {
   static const int explore = 0;
@@ -11,32 +12,59 @@ class FooderlichTab {
 // AppStateManager mocks the various app state such as app initialization,
 // app login, and onboarding.
 class AppStateManager extends ChangeNotifier {
-  // Checks to see if the user is logged in
+  // Authentication state
   bool _loggedIn = false;
-  // Checks to see if the user has completed onboarding
   bool _onboardingComplete = false;
-  // Records the current tab the user is on.
   int _selectedTab = FooderlichTab.explore;
-  // Stores user state properties on platform specific file system.
-  final _appCache = AppCache();
+  User? _currentUser;
 
-  // Property getters.
+  // Services
+  final _appCache = AppCache();
+  final _authService = AuthService();
+
+  // Property getters
   bool get isLoggedIn => _loggedIn;
   bool get isOnboardingComplete => _onboardingComplete;
   int get getSelectedTab => _selectedTab;
-
+  User? get currentUser => _currentUser;
   // Initializes the app
   Future<void> initializeApp() async {
+    // Initialize auth service
+    await _authService.init();
+
     // Check if the user is logged in
-    _loggedIn = await _appCache.isUserLoggedIn();
+    _loggedIn = await _authService.isLoggedIn();
+    if (_loggedIn) {
+      _currentUser = await _authService.getCurrentUser();
+    }
+
     // Check if the user completed onboarding
     _onboardingComplete = await _appCache.didCompleteOnboarding();
   }
 
-  void login(String username, String password) async {
-    _loggedIn = true;
-    await _appCache.cacheUser();
-    notifyListeners();
+  // Login with email and password
+  Future<bool> login(String email, String password) async {
+    final user = await _authService.login(email, password);
+    if (user != null) {
+      _currentUser = user;
+      _loggedIn = true;
+      await _appCache.cacheUser();
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  // Register a new user
+  Future<bool> register(
+      String firstName, String lastName, String email, String password) async {
+    final success =
+        await _authService.register(firstName, lastName, email, password);
+    if (success) {
+      // Auto-login after successful registration
+      return login(email, password);
+    }
+    return false;
   }
 
   void onboarded() async {
@@ -55,15 +83,19 @@ class AppStateManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void logout() async {
-    // Reset all properties once user logs out
-    _loggedIn = false;
-    _onboardingComplete = false;
-    _selectedTab = 0;
+  Future<bool> logout() async {
+    final success = await _authService.logout();
+    if (success) {
+      // Reset all properties once user logs out
+      _loggedIn = false;
+      _currentUser = null;
+      _selectedTab = FooderlichTab.explore;
 
-    // Reinitialize the app
-    await _appCache.invalidate();
-    await initializeApp();
-    notifyListeners();
+      // Clear app cache but retain onboarding status
+      await _appCache.invalidate();
+      notifyListeners();
+      return true;
+    }
+    return false;
   }
 }

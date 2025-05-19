@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../screens/grocery_item_screen.dart';
 import '../screens/login_screen.dart';
+import '../screens/signup_screen.dart';
 import '../models/models.dart';
 import '../screens/onboarding_screen.dart';
 import '../screens/home.dart';
@@ -16,7 +17,6 @@ class AppRouter {
     required this.groceryManager,
     required this.profileManager,
   });
-
   late final router = GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateManager,
@@ -27,6 +27,12 @@ class AppRouter {
             path: '/login',
             builder: (context, state) {
               return const LoginScreen();
+            }),
+        GoRoute(
+            name: 'signup',
+            path: '/signup',
+            builder: (context, state) {
+              return const SignupScreen();
             }),
         GoRoute(
             name: 'onboarding',
@@ -105,19 +111,31 @@ class AppRouter {
       redirect: (context, state) {
         final loggedIn = appStateManager.isLoggedIn;
         final isLoggingIn = state.matchedLocation == '/login';
-        if (!loggedIn) return isLoggingIn ? null : '/login';
-        // if (!loggedIn && !isLoggingIn) {
-        //   return '/login';
-        // }
+        final isSigningUp = state.matchedLocation == '/signup';
+
+        // Allow access to login and signup routes even when not logged in
+        if (!loggedIn) {
+          // Allow both login and signup routes when not logged in
+          if (isLoggingIn || isSigningUp) {
+            return null; // No redirect needed
+          }
+          return '/login'; // Redirect to login if accessing other routes while not logged in
+        }
+
         final isOnboardingComplete = appStateManager.isOnboardingComplete;
         final isOnboarding = state.matchedLocation == '/onboarding';
+
+        // If logged in but onboarding not complete, direct to onboarding
         if (!isOnboardingComplete) {
           return isOnboarding ? null : '/onboarding';
         }
 
-        if (isLoggingIn || isOnboarding) {
+        // If user is logged in and tries to access login, signup or onboarding,
+        // redirect to home
+        if (isLoggingIn || isSigningUp || isOnboarding) {
           return '/${FooderlichTab.explore}';
         }
+
         return null;
       });
 }

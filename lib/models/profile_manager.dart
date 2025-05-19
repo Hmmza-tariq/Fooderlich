@@ -7,6 +7,7 @@ class ProfileManager extends ChangeNotifier {
         firstName: 'Stef',
         lastName: 'Patt',
         role: 'Flutterista',
+        email: 'stef.patt@example.com',
         profileImageUrl: 'assets/profile_pics/person_stef.jpeg',
         points: 100,
         darkMode: _darkMode,
